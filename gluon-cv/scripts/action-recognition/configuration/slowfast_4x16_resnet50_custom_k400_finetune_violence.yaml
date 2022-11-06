@@ -1,0 +1,55 @@
+# slowfast_4x16_resnet50_kinetics400
+
+DDP_CONFIG:
+  WORLD_SIZE: 1 # Node 갯수, 이 갯수만큼 WORLD_URLS도 늘어나야 한다
+  WORLD_RANK: 0
+  GPU_WORLD_SIZE: 8 # 어차피 자동으로 다시 계산
+  GPU_WORLD_RANK: 0 # 현재 머신의 WORLD RANK 시작값인듯
+  DIST_URL: 'env://' # 'tcp://172.31.72.195:23456'
+  WOLRD_URLS: ['localhost']
+  AUTO_RANK_MATCH: False
+  DIST_BACKEND: 'nccl'
+  GPU: 0
+  DISTRIBUTED: True
+
+CONFIG:
+  TRAIN:
+    EPOCH_NUM: 30
+    BATCH_SIZE: 16
+    LR: 0.01
+    MOMENTUM: 0.9
+    W_DECAY: 1e-5
+    USE_WARMUP: True
+    WARMUP_EPOCHS: 5
+    LR_POLICY: 'Cosine'
+    RESUME_EPOCH: -1
+
+  VAL:
+    FREQ: 2
+    BATCH_SIZE: 16
+
+  DATA:
+    TRAIN_ANNO_PATH: '/workspace/dataset/mix_dataset/anno/train.txt'
+    VAL_ANNO_PATH: '/workspace/dataset/mix_dataset/anno/val.txt'
+    TRAIN_DATA_PATH: '/workspace/dataset/mix_dataset/train'
+    VAL_DATA_PATH:  '/workspace/dataset/mix_dataset/val'
+    NUM_CLASSES: 2
+    CLIP_LEN: 32
+    FRAME_RATE: 2
+    NUM_SEGMENT: 1
+    NUM_CROP: 1
+    TEST_NUM_SEGMENT: 10
+    TEST_NUM_CROP: 3
+    MULTIGRID: False
+    KEEP_ASPECT_RATIO: False
+
+  MODEL:
+    NAME: 'slowfast_4x16_resnet50_custom'
+    PRETRAINED: True
+
+  LOG:
+    BASE_PATH: '/workspace/exp1'
+    LOG_DIR: 'tb_log'
+    SAVE_DIR: 'checkpoints'
+    EVAL_DIR: '/workspace/exp1/eval'
+    SAVE_FREQ: 5 
